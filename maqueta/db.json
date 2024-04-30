@@ -1,0 +1,261 @@
+{
+  "usuario": [
+    {
+      "id": "1",
+      "nombre": "Dulce",
+      "a_paterno": "G",
+      "a_materno": "Mani",
+      "clave": "123456",
+      "correo": "dulce@mail.com",
+      "foto": "/assets/img/mujer.jpeg",
+      "fh_alta": "2024-04-6"
+    },
+    {
+      "id": "2",
+      "nombre": "Dulce",
+      "a_paterno": "G",
+      "a_materno": "Mani",
+      "clave": "12345",
+      "correo": "ducle@mail.com",
+      "foto": "/assets/img/mujer.jpeg",
+      "fh_alta": "2024-04-6"
+    },
+    {
+      "id": "3",
+      "nombre": "nataly",
+      "a_paterno": "gudarrama",
+      "a_materno": "mani",
+      "correo": "nataly@mail.com",
+      "clave": "98765",
+      "foto": "",
+      "fh_alta": "2024-04-28"
+    },
+    {
+      "id": "4",
+      "nombre": "Daniel",
+      "a_paterno": "Martinez",
+      "a_materno": "A",
+      "correo": "dan@mail.com",
+      "clave": "12345",
+      "foto": "",
+      "fh_alta": "2024-04-28"
+    },
+    {
+      "id": "5",
+      "nombre": "cristina",
+      "a_paterno": "H",
+      "a_materno": "J",
+      "correo": "cris@mail.ccom",
+      "clave": "hola",
+      "foto": "",
+      "fh_alta": "2024-04-28"
+    },
+    {
+      "id": "6",
+      "nombre": "Perla",
+      "a_paterno": "Ramirez",
+      "a_materno": "A",
+      "correo": "perla@mail.com",
+      "clave": "perla",
+      "foto": "",
+      "fh_alta": "2024-04-28"
+    },
+    {
+      "id": "7",
+      "nombre": "Hugo",
+      "a_paterno": "Lopez",
+      "a_materno": "A",
+      "correo": "hugo@mail.com",
+      "clave": "hugo",
+      "foto": "",
+      "fh_alta": "2024-04-28"
+    },
+    {
+      "id": "8",
+      "nombre": "prueba",
+      "a_paterno": "a",
+      "a_materno": "b",
+      "correo": "preuba@mail.com",
+      "clave": "preuba",
+      "foto": "",
+      "fh_alta": "2024-04-29"
+    },
+    {
+      "id": "9",
+      "nombre": "prueba",
+      "a_paterno": "a",
+      "a_materno": "b",
+      "correo": "preuba@mail.com",
+      "clave": "preuba",
+      "foto": "",
+      "fh_alta": "2024-04-29"
+    },
+    {
+      "id": "10",
+      "nombre": "prueba2",
+      "a_paterno": "a",
+      "a_materno": "b",
+      "correo": "prueba2@mail.com",
+      "clave": "123456",
+      "foto": "",
+      "fh_alta": "2024-04-29"
+    },
+    {
+      "id": "11",
+      "nombre": "daisy",
+      "a_paterno": "mani",
+      "a_materno": "gonzalez",
+      "correo": "daisy@mail.com",
+      "clave": "1234567",
+      "foto": "",
+      "fh_alta": "2024-04-29"
+    },
+    {
+      "id": "12",
+      "nombre": "Ariel",
+      "a_paterno": "Mani",
+      "a_materno": "Gonzales",
+      "correo": "ariel@mail.com",
+      "clave": "12345678",
+      "foto": "",
+      "fh_alta": "2024-04-29"
+    },
+    {
+      "id": "13",
+      "nombre": "karen",
+      "a_paterno": "mani",
+      "a_materno": "gonzales",
+      "correo": "karen@mail.com",
+      "clave": "123456",
+      "foto": "",
+      "fh_alta": "2024-04-29"
+    },
+    {
+      "id": "14",
+      "nombre": "karen",
+      "a_paterno": "mani",
+      "a_materno": "gonzales",
+      "correo": "karen@mail.com",
+      "clave": "1234567",
+      "foto": "",
+      "fh_alta": "2024-04-29"
+    },
+    {
+      "id": "15",
+      "nombre": "josue",
+      "a_paterno": "cano",
+      "a_materno": "c",
+      "correo": "josue@mail.com",
+      "clave": "1234546",
+      "foto": "",
+      "fh_alta": "2024-04-29"
+    },
+    {
+      "id": "16",
+      "nombre": "Monica",
+      "a_paterno": "Villa",
+      "a_materno": "C",
+      "correo": "moni@mail.com",
+      "clave": "123456",
+      "foto": "",
+      "fh_alta": "2024-04-30"
+    }
+  ],
+  "perros": [
+    {
+      "id": "1",
+      "nombre": "Coca",
+      "edad": "13",
+      "raza": "Dachshund",
+      "usuario_id": 1,
+      "fh_alta": "",
+      "evidencia": []
+    }
+  ],
+  "vacuna": [
+    {
+      "id": "1",
+      "nombre": "Rabia"
+    },
+    {
+      "id": "2",
+      "nombre": "Parbovirus"
+    },
+    {
+      "id": "3",
+      "nombre": "Moquillo"
+    }
+  ],
+  "indices": [
+    {
+      "clave": "usuario",
+      "indice": 15,
+      "id": "1"
+    },
+    {
+      "clave": "perro",
+      "indice": 1,
+      "id": "2"
+    },
+    {
+      "clave": "vacunacion",
+      "indice": 6,
+      "id": "3"
+    },
+    {
+      "clave": "vacuna",
+      "indice": 3,
+      "id": "4"
+    }
+  ],
+  "vacunas": [
+    {
+      "id": "1",
+      "fh_vacuna": "2024-04-26",
+      "vacuna_id": "1",
+      "perro_id": "1"
+    },
+    {
+      "id": 6,
+      "vacuna_id": "3",
+      "fh_vacuna": "2024-04-17",
+      "perro_id": "1"
+    },
+    {
+      "id": "2",
+      "vacuna_id": "2",
+      "fh_vacuna": "2023-11-16",
+      "perro_id": "1"
+    },
+    {
+      "id": 3,
+      "vacuna_id": "3",
+      "fh_vacuna": "2023-04-06",
+      "perro_id": "1"
+    },
+    {
+      "id": 7,
+      "vacuna_id": "3",
+      "fh_vacuna": "2022-11-30",
+      "perro_id": "1"
+    },
+    {
+      "id": 4,
+      "vacuna_id": "1",
+      "fh_vacuna": "2022-10-06",
+      "perro_id": "1"
+    },
+    {
+      "id": 5,
+      "vacuna_id": "2",
+      "fh_vacuna": "2019-11-30",
+      "perro_id": "1"
+    },
+    {
+      "id": 6,
+      "vacuna_id": "2",
+      "fh_vacuna": "2017-07-26",
+      "perro_id": "1"
+    }
+  ]
+}
