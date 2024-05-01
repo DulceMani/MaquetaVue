@@ -12,6 +12,7 @@ export const useUsuarioStore = defineStore('usuario', {
     clave: '',
     foto: null,
     fh_alta: null,
+    tipo_us: 1
   }),
   actions: {
     estableceUsuario(usuario: IUsuario) {
@@ -36,6 +37,9 @@ export const useUsuarioStore = defineStore('usuario', {
   getters: {
     getNombreCompleto: (state) => {
       return state.nombre + " " + state.a_paterno + " " + state.a_materno;
+    },
+    getUsuarioID: (state) => {
+      return state.id;
     }
   },
   persist: true

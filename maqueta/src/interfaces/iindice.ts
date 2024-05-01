@@ -1,5 +1,5 @@
 export interface IIndice {
-    id: number,
+    id: number | string,
     clave: string,
     indice: number
 }

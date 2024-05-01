@@ -2,99 +2,167 @@
   <v-container>
     <v-card-item>
       <v-card-title>
-        Lista de tus mascotas
+        <v-row>
+          <v-col lg="9" md="9" sm="7">
+            <v-icon>mdi-paw</v-icon>
+            Lista de tus mascotas
+          </v-col>
+          <v-col lg="3" md="3" sm="5"
+              justify="last">
+            <v-btn prepend-icon="mdi-plus" 
+              size="small"
+              color="primary"
+              @click="nuevoPerro"
+            >    Nueva Mascota
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-card-title>
     </v-card-item>
     <v-card-text>
-      <v-row justify="center">
-        <v-col cols="12">
-          <v-table height="300px">
-            <thead>
-              <tr>
-                <th class="text-left">
-                  Nombre
-                </th>
-                <th class="text-left">
-                  Edad
-                </th>
-                <th class="text-left">
-                  Raza
-                </th>
-                <th class="text-left">
-                  Detalle
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="perro in perros"
-                :key="perro.id"
-              >
-                <td>{{ perro.nombre }}</td>
-                <td>{{ perro.edad }}</td>
-                <td>{{ perro.raza }}</td>
-                <td>
-                  <v-btn color="primary" 
-                    size="small" 
-                    icon="mdi-paw"
-                    @click="abrirDetallePerro(perro)"
-                  >
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col cols="8">
-          <v-container class="max-width">
-            <v-pagination
-              v-model="paginacion.page"
-              :length="paginacion.length"
-              class="my-4"
-            ></v-pagination>
-          </v-container>
-        </v-col>
-      </v-row>
+      <Tabla
+        :headers="headers"
+        :data="perros"
+        :page="paginacion.page"
+        :length="paginacion.length"
+        @cambia-pagina="(page) => paginacion.page = page"
+      >
+        <template v-slot:detalle-slot="props">
+          <v-btn color="primary" 
+            size="small" 
+            icon="mdi-paw"
+            @click="abrirDetallePerro(props.item)"
+          >
+          </v-btn>
+        </template>
+        <template v-slot:evidencia-slot="props">
+          <v-btn color="purple"
+            size="small"
+            icon="mdi-download"
+            @click="descargarPDF(props.item.evidencia)"
+            :disabled="props.item.evidencia === 0"
+          >
+          </v-btn>
+          <a style="display: none;" :href="urlPDF" :id="'fileP'+props.item.evidencia" target="_blank"></a>
+        </template>
+        <template v-slot:eliminar-slot="props">
+          <v-btn color="danger" 
+            size="small" 
+            icon
+            @click="abrirDetallePerro(props.item)"
+          >
+          <v-icon color="white">
+              mdi-close
+            </v-icon>
+          </v-btn>
+        </template>
+      </Tabla>
     </v-card-text>
     <FormPerro 
       :perro="perroDialog"
       :dialog="dialog" 
-      @cierra-dialog="dialog = false"/>
+      @cierra-dialog="dialog = false"
+    />
+    <Modal
+      title="Cuidado"
+      icon="mdi-paw"
+      :btn-cancel="true"
+      :btn-ok="true"
+      :dialog="dialogAlert"
+      :size="250"
+      @cancelar-modal="dialogAlert = false"
+      @aceptar-cambios="eliminaPerro"
+    >
+      Cuidado estas apunto de eliminar el registro del perro se eliminara todo su historial.
+    </Modal>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { reactive, ref } from 'vue';
 import axios from 'axios'
-import { API } from '@/contantes';
+import { API, base64ToUrl } from '@/contantes';
 import { useUsuarioStore } from '@/stores/usuario';
 import { storeToRefs } from 'pinia';
 import { usePerrosStore } from '@/stores/perros';
 import FormPerro from '@/components/Perro/FormPerro.vue'
 import type { IPerro } from '@/interfaces/iperro';
+import type { IArchivo } from '@/interfaces/iarchivo';
+import Tabla from '@/components/Tabla.vue';
+import Modal from '@/components/Modal.vue'
 
 /**declaraciones */
 const usuario = useUsuarioStore();
 const { id } = storeToRefs(usuario);
 const paginacion = reactive({
   page: 1,
-  length: 5
+  length: 1,
+  per_page: 5
 });
-const perros_st = usePerrosStore()
+const perros_st = usePerrosStore();
+const { eliminaPerro } = perros_st;
 const {perros} = storeToRefs(perros_st);
 const dialog = ref(false);
 const perroDialog = ref<IPerro | null>(null);
-
+const urlPDF = ref('');
+const archivo = ref<IArchivo | null>(null);
+const dialogAlert = ref(false);
+const perroDeleteId = ref(0);
+const headers = [
+  {
+    titulo: "Detalle",
+    slotName: "detalle-slot",
+    nameProp: ""
+  },
+  {
+    titulo: "Nombre",
+    slotName: "nombre",
+    nameProp: "nombre"
+  },
+  {
+    titulo: "Edad",
+    slotName: "edad",
+    nameProp: "edad"
+  },
+  {
+    titulo: "Raza",
+    slotName: "raza",
+    nameProp: "raza"
+  },
+  {
+    titulo: "Fecha de registro",
+    slotName: "fh_alta",
+    nameProp: "fh_alta"
+  },
+  {
+    titulo: "Evidencia",
+    slotName: "evidencia-slot",
+    nameProp: ""
+  },
+  {
+    titulo: "Eliminar",
+    slotName: "eliminar-slot",
+    nameProp: ""
+  }
+];
 
 /**funciones */
 onMounted (async () => {
+  await traePerros();
+});
+watch(perros.value, async () =>{
+  await traePerros();
+});
+watch(paginacion, async () =>{
+  await traePerros();
+});
+
+const traePerros = async () => {
   try {
     let response = await axios({
       method: "GET",
-      url: `${API}/perros?_page=${paginacion.page}&usuario_id=${id.value}`
+      url: `${API}/perros?_sort=fh_alta&_page=${paginacion.page}&_per_page=${paginacion.per_page}&usuario_id=${id.value}`
     }); 
     paginacion.length = response.data.pages
     perros.value = response.data.data;
@@ -102,12 +170,62 @@ onMounted (async () => {
   } catch(ex) {
     console.log(ex.message);
   }
-});
+}
 
 const abrirDetallePerro = (perro: IPerro) => {
+  console.log(perro)
   if(perro){
     dialog.value = true;
     perroDialog.value = perro;
+  }
+}
+
+const nuevoPerro = () => {
+  dialog.value = true;
+}
+
+const descargarPDF =  async (evidencia: number) => {
+  try {
+    if(evidencia !== 0){
+      const response = await axios({
+        method: "GET",
+        url: `${API}/archivos/${evidencia}`
+      });
+      archivo.value = response.data;
+      urlPDF.value = base64ToUrl(archivo.value?.datos, archivo.value?.tipo);
+      console.log(urlPDF.value);
+      setTimeout(()=> document.getElementById('fileP'+evidencia).click(), 300);
+    }
+  } catch(ex) {
+    console.log(ex.message);
+  }
+}
+
+const eliminarPerro  = async () => {
+  try{
+    let response = await axios({
+      method: "GET",
+      url: `${API}/vacunas?perro_id=${perroDeleteId}`
+    });
+    response.data.map(async (v) => {
+      let response = await axios({
+        method: "DELETE",
+        url: `${API}/vacunas/${v.id}`
+      });
+    })
+    let evidencia = perros.value[perroDeleteId.value].evidencia;
+    response = await axios({
+      method: "DELETE",
+      url: `${API}/archivos/${evidencia}`
+    });
+    response = await axios({
+      method: "DELETE",
+      url: `${API}/perros/${perroDeleteId.value}`
+    });
+    eliminaPerro(perroDeleteId.value)
+
+  } catch(ex) {
+    console.log(ex.message)
   }
 }
 

@@ -47,19 +47,27 @@
                 type="password"
               >
               </v-text-field>
-              <v-btn 
-                color="primary"
-                class="me-4" 
-                :disabled="cargando"
-                type="submit"
-              >
-                Aceptar
-              </v-btn>
-              <v-btn @click="clear"
-                :disabled="cargando"
-              >
-                Limpiar
-              </v-btn>
+              <v-row class="mt-3">
+                <v-col cols="6">
+                  <v-btn 
+                    color="primary"
+                    class="me-4" 
+                    :disabled="cargando"
+                    type="submit"
+                    block
+                  >
+                    Aceptar
+                  </v-btn>
+                </v-col>
+                <v-col cols="6">
+                  <v-btn @click="clear"
+                    :disabled="cargando"
+                    block
+                  >
+                    Limpiar
+                  </v-btn>
+                </v-col>
+              </v-row>
             </v-form>
           </v-col>
         </v-row>
@@ -90,10 +98,10 @@
 </template>
 
 <script setup lang="ts">
-import { API } from '@/contantes'
+import { API, fechaActual } from '@/contantes'
 import { reactive, ref } from 'vue';
 import axios from 'axios'
-import { useUsuariosStore, useUsuarioStore } from "@/stores/usuario";
+import { useUsuarioStore } from "@/stores/usuario";
 import type { IUsuario } from '@/interfaces/iusuario';
 import type { VForm } from "vuetify/components";
 import router from '@/router';
@@ -103,7 +111,7 @@ import { useIndicesStore } from '@/stores/indices';
 /**declaraciones */
 const usuario = useUsuarioStore();
 const { id } = storeToRefs(usuario);
-if(id.value != 0) {
+if(id.value !== 0) {
   router.push("/contenido");
 }
 
@@ -158,12 +166,9 @@ const registrarUsuario = async () => {
     const {valid} = await formRef.value!.validate();
     if(valid){
       cargando.value = true;
-      let fecha = new Date();
-      let year = fecha.getFullYear();
-      let month = String(fecha.getMonth() + 1).padStart(2, '0');
-      let day = String(fecha.getDate()).padStart(2, '0');
-      us_init.fh_alta = `${year}-${month}-${day}`;
+      us_init.fh_alta = fechaActual();
       us_init.id = getIndice("usuario") + 1;
+      us_init.id = us_init.id.toString();
       let resp  = await axios({
         method: 'POST',
         url: `${API}/usuario`,

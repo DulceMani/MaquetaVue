@@ -58,9 +58,8 @@ import { storeToRefs } from 'pinia';
 
 /**declaraciones */
 const usuario = useUsuarioStore();
-const { destruyeUsuario } = usuario;
-const { id } = storeToRefs(usuario);
-if(id.value == 0){
+const { destruyeUsuario, getUsuarioID } = usuario;
+if(getUsuarioID == 0){
   router.push("/login");
 }
 const drawer = ref(false);

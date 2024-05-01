@@ -1,5 +1,5 @@
 export interface IUsuario {
-  id: number,
+  id: number | string,
   nombre: string,
   a_paterno: string,
   a_materno: string,
@@ -7,4 +7,5 @@ export interface IUsuario {
   clave: string,
   foto: string | null,
   fh_alta: string | null,
+  tipo_us: number
 }

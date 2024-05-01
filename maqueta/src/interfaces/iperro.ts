@@ -1,5 +1,5 @@
 export interface IVacunacion {
-    id: number,
+    id: number | string,
     fh_vacuna: string,
     vacuna_id: number,
     perro_id: number
@@ -12,5 +12,5 @@ export interface IPerro {
     edad: number,
     usuario_id: number,
     fh_alta: string,
-    evidencia: Array<byte> | null,
+    evidencia: number,
 }

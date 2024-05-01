@@ -17,6 +17,9 @@ export const usePerrosStore = defineStore("perros", {
     setPerro(perro: IPerro) {
       let index = this.perros.findIndex(p => p.id == p.id);
       this.perros[index] = perro;
+    },
+    eliminaPerro(id: number) {
+      this.perros = this.perros.filter(p => p.id !== id);
     }
   },
   getters:{

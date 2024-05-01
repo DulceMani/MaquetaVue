@@ -30,6 +30,7 @@
                   class="me-4" 
                   :disabled="cargando" 
                   type="submit"
+                  block
                 >
                   Aceptar
                 </v-btn>

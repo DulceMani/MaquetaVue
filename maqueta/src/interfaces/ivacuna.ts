@@ -1,4 +1,4 @@
 export interface IVacuna {
-    id: number,
+    id: number | string,
     nombre: string
 }

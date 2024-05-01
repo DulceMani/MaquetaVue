@@ -18,32 +18,27 @@ export const useIndicesStore = defineStore("indices", {
     incrementaIndice(clave: String) {
       this.indices.map(i => {
         if (i.clave == clave) {
-          i.indice++;
+          i.indice+=1;
         }
       })
     },
     setIndice(clave: string, indice: number) {
-      this.indices.map(i => {
-        if (i.clave == clave)
-          i.indice = indice;
-      })
+      let index = this.indices.findIndex(i => i.clave == clave);
+      this.indices[index].indice = indice;
     },
     async actualizaIndiceBD(clave: string) {
-      let indice = this.indices.find(i => i.clave == clave);
+      let index = this.indices.findIndex(i => i.clave == clave);
       let resp = await axios({
         method: 'PATCH',
-        url: `${API}/indices/${indice.id}`,
-        data: { "indice": indice?.indice }
+        url: `${API}/indices/${this.indices[index].id}`,
+        data: { "indice": this.indices[index].indice }
       });
-      this.indices = resp.data;
+      this.indices[index] = resp.data;
     }
   },
-  getters: {
-    getIndice: (state) => {
+  getters:{
+    getIndice: (state) =>{
       return (clave) => state.indices.find(i => i.clave == clave)?.indice;
-    },
-    getId: (state) => {
-      return (clave) => state.indices.find(i => i.clave == clave)?.id;
     }
   },
   persist: true
