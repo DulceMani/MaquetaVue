@@ -193,6 +193,7 @@ const abrirDetallePerro = (perro: IPerro) => {
 }
 
 const nuevoPerro = () => {
+  perroDialog.value = null;
   dialog.value = true;
 }
 
