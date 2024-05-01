@@ -19,12 +19,9 @@
               Crear eliminar, modificar datos del Perro
             </li>
             <li>Crear eliminar, vacunas del perro</li>
-            <li>Para usuario Admin , eliminar y modificar, usuarios y vacunas.
-              <ul>
-                <li>correo: dulce@mail.com</li>
-                <li>clave: 123456</li>
-              </ul>
-            </li>
+            <li>Subir evidencia como Documento PDF</li>
+            <li>correo: dulce@mail.com</li>
+            <li>clave: 123456</li>
           </ul>
         </v-col>
         <v-col>

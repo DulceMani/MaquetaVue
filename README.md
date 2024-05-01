@@ -21,6 +21,11 @@ Ver [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ## Project Setup
 
+
+```sh
+cd maqueta
+```
+
 ```sh
 npm install
 ```
