@@ -233,28 +233,10 @@
       "evidencia": 0
     },
     {
-      "id": "10",
-      "nombre": "Princesa",
-      "edad": "10",
-      "raza": "Unica",
-      "usuario_id": "1",
-      "fh_alta": "2024-04-30",
-      "evidencia": 0
-    },
-    {
       "id": "11",
       "nombre": "Gohan",
       "edad": "6",
       "raza": "Husky",
-      "usuario_id": "1",
-      "fh_alta": "2024-04-30",
-      "evidencia": 0
-    },
-    {
-      "id": "12",
-      "nombre": "Salsa",
-      "edad": "2",
-      "raza": "Unico",
       "usuario_id": "1",
       "fh_alta": "2024-04-30",
       "evidencia": 0
@@ -297,7 +279,7 @@
     },
     {
       "clave": "archivo",
-      "indice": 10,
+      "indice": 11,
       "id": "5"
     }
   ],

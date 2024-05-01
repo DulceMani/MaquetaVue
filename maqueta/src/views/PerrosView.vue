@@ -8,7 +8,8 @@
             Lista de tus mascotas
           </v-col>
           <v-col lg="3" md="3" sm="5"
-              justify="last">
+            class="d-flex justify-end"
+          >
             <v-btn prepend-icon="mdi-plus" 
               size="small"
               color="primary"
@@ -20,12 +21,16 @@
       </v-card-title>
     </v-card-item>
     <v-card-text>
+      <hr>
       <Tabla
         :headers="headers"
         :data="perros"
         :page="paginacion.page"
         :length="paginacion.length"
-        @cambia-pagina="(page) => paginacion.page = page"
+        :buscar="buscardor"
+        @cambia-pagina="(page) => paginaTabla(page)"
+        @buscador-text="(dato) => busuqedaDato(dato)"
+        @cambia-num-registros="(dato) => cambiaNumRegistros(dato)"
       >
         <template v-slot:detalle-slot="props">
           <v-btn color="primary" 
@@ -49,7 +54,7 @@
           <v-btn color="danger" 
             size="small" 
             icon
-            @click="abrirDetallePerro(props.item)"
+            @click="alertaElinaPerro(props.item.id)"
           >
           <v-icon color="white">
               mdi-close
@@ -70,8 +75,9 @@
       :btn-ok="true"
       :dialog="dialogAlert"
       :size="250"
+      color="danger"
       @cancelar-modal="dialogAlert = false"
-      @aceptar-cambios="eliminaPerro"
+      @aceptar-cambios="eliminarPerro"
     >
       Cuidado estas apunto de eliminar el registro del perro se eliminara todo su historial.
     </Modal>
@@ -90,7 +96,7 @@ import FormPerro from '@/components/Perro/FormPerro.vue'
 import type { IPerro } from '@/interfaces/iperro';
 import type { IArchivo } from '@/interfaces/iarchivo';
 import Tabla from '@/components/Tabla.vue';
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/Modal.vue';
 
 /**declaraciones */
 const usuario = useUsuarioStore();
@@ -146,17 +152,24 @@ const headers = [
     nameProp: ""
   }
 ];
-
-/**funciones */
+const buscardor = ref(true);
+/***********************funciones *************/
 onMounted (async () => {
   await traePerros();
 });
 watch(perros.value, async () =>{
   await traePerros();
 });
-watch(paginacion, async () =>{
+
+
+const paginaTabla = async (page: number) =>{
+  paginacion.page = page;
   await traePerros();
-});
+}
+const cambiaNumRegistros = async (per_page: number) =>{
+  paginacion.per_page = per_page;
+  await traePerros();
+}
 
 const traePerros = async () => {
   try {
@@ -164,7 +177,7 @@ const traePerros = async () => {
       method: "GET",
       url: `${API}/perros?_sort=fh_alta&_page=${paginacion.page}&_per_page=${paginacion.per_page}&usuario_id=${id.value}`
     }); 
-    paginacion.length = response.data.pages
+    paginacion.length = response.data.pages;
     perros.value = response.data.data;
     
   } catch(ex) {
@@ -173,8 +186,7 @@ const traePerros = async () => {
 }
 
 const abrirDetallePerro = (perro: IPerro) => {
-  console.log(perro)
-  if(perro){
+  if(perro) {
     dialog.value = true;
     perroDialog.value = perro;
   }
@@ -201,31 +213,59 @@ const descargarPDF =  async (evidencia: number) => {
   }
 }
 
+const alertaElinaPerro = (Id: number) => { 
+  perroDeleteId.value = Id;
+  dialogAlert.value = true;
+}
+
 const eliminarPerro  = async () => {
   try{
+    console.log(perroDeleteId.value);
     let response = await axios({
       method: "GET",
-      url: `${API}/vacunas?perro_id=${perroDeleteId}`
+      url: `${API}/vacunas?perro_id=${perroDeleteId.value}`
     });
     response.data.map(async (v) => {
-      let response = await axios({
+      await axios({
         method: "DELETE",
         url: `${API}/vacunas/${v.id}`
       });
     })
-    let evidencia = perros.value[perroDeleteId.value].evidencia;
-    response = await axios({
-      method: "DELETE",
-      url: `${API}/archivos/${evidencia}`
-    });
-    response = await axios({
+    let evidencia = perros.value.find(p => p.id == perroDeleteId.value).evidencia;
+    if(evidencia !==0){
+      await axios({
+        method: "DELETE",
+        url: `${API}/archivos/${evidencia}`
+      });
+    }
+    
+    await axios({
       method: "DELETE",
       url: `${API}/perros/${perroDeleteId.value}`
     });
     eliminaPerro(perroDeleteId.value)
-
+    dialogAlert.value = false;
   } catch(ex) {
     console.log(ex.message)
+  }
+}
+
+const busuqedaDato = async (texto: String) => {
+  try {
+    console.log(texto)
+    let response = await axios({
+      method: "GET",
+      url: `${API}/perros?_sort=fh_alta,nombre`
+    }); 
+    perros.value = response.data.filter(elemento => {
+      // Convertir todos los valores de las propiedades del objeto a texto y buscar el texto
+        return Object.values(elemento).some(valor => {
+          return typeof valor === 'string' && valor.toLowerCase().includes(texto.toLowerCase());
+      });
+    }).slice(0, paginacion.per_page);
+    
+  } catch(ex) {
+    console.log(ex.message);
   }
 }
 

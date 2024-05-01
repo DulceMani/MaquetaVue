@@ -2,12 +2,12 @@
   <v-dialog
     v-model="props.dialog"
     :max-width="size"
-    
   >
-    <v-card
-      :prepend-icon="icon"
-      :title="props.title"
-    >
+    <v-card>
+    <v-card-title>
+      <v-icon :color="props.color">{{ props.icon }}</v-icon>
+      {{ props.title }}
+    </v-card-title>
     <v-card-text>
       <slot></slot>
     </v-card-text>
@@ -19,7 +19,7 @@
         >
         </v-btn>
         <v-btn v-if="props.btnOk"
-          color="primary"
+          :color="props.color"
           text="Aceptar"
           @click="emit('aceptarCambios')"
         ></v-btn>
@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import { defineProps } from 'vue'
 const props = defineProps({
   dialog: {
     type: Boolean,
@@ -53,6 +54,10 @@ const props = defineProps({
   size: {
     type: Number,
     default: 300
+  },
+  color: {
+    type: String,
+    default: 'primary'
   }
 });
 

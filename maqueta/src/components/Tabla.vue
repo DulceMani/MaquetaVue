@@ -1,4 +1,29 @@
 <template>
+  <v-row v-if="props.buscar">
+    <v-col cols="6">
+      <div class="select-table">
+      <v-select
+        :value="props.per_page"
+        :items="[5, 10, 50, 100]"
+        @update:modelValue="(dato) => emit('cambiaNumRegistros', dato)"
+      ></v-select>
+
+      </div>
+    </v-col>
+    <v-col cols="6" 
+      class="d-flex justify-end"
+    >
+      <div class="buscador-table">
+        <v-text-field 
+          label="Buscar" 
+          required 
+          type="text"
+          class=""
+          @update:modelValue="(dato) => emit('buscadorText', dato)"
+        ></v-text-field>
+      </div>
+    </v-col>
+  </v-row>
   <v-row justify="center">
     <v-col cols="12">
       <v-table >
@@ -19,6 +44,7 @@
                 <slot 
                   :item="item"
                   :name="head.slotName"
+                  :index="i"
                 ></slot>
               </div>
               <div v-else>
@@ -62,25 +88,37 @@ const props = defineProps({
     type: Number,
     default: 1
   },
+  per_page:{
+    type: Number,
+    default: 5
+  },
   length: {
     type: Number,
     default: 1
+  },
+  buscar: {
+    type: Boolean,
+    default: false
   }
 });
-const emit = defineEmits(["cambiaPagina"]);
+const emit = defineEmits(["cambiaPagina", "cambiaNumRegistros", "buscadorText"]);
 
 const  obtenerDato = (objeto: any, propiedad: string) => {
   return objeto[propiedad];
 }
 const isFieldSlot = (fieldName: string): boolean => {
   const instance = getCurrentInstance();
-    // Verifica si existe una ranura con el nombre fieldName en $scopedSlots
-    // Si el campo tiene una ranura asociada, entonces $scopedSlots[fieldName] tendrá un valor definido
-    // Si no existe, $scopedSlots[fieldName] será 'undefined'
   return typeof instance.slots[fieldName] !== 'undefined';
 }
 </script>
 
 <style scoped>
-
+.select-table {
+  width: 10%;
+  min-width: 4rem;
+}
+.buscador-table {
+  width: 40%;
+  min-width: 5rem;
+}
 </style>

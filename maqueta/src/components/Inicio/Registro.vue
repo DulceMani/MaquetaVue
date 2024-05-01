@@ -79,22 +79,17 @@
       </v-card>
     </v-col>
   </v-row>
-  <v-dialog
-    v-model="dialog.dialog" 
-    width="auto"
+  <Modal
+    :title="dialog.titulo"
+    icon="mdi-paw"
+    :btn-ok="true"
+    :dialog="dialog.dialog"
+    :size="250"
+    :color="dialog.color"
+    @aceptar-cambios="dialog.dialog = false"
   >
-    <v-card 
-      max-width="400" 
-      prepend-icon="mdi-warning"
-      :text="dialog.msj" 
-      title="Warning"
-    >
-      <template v-slot:actions>
-        <v-btn class="ms-auto" text="Cerrar" @click="dialog.dialog = false">
-        </v-btn>
-      </template>
-    </v-card>
-  </v-dialog>
+    {{ dialog.msj }}
+  </Modal>
 </template>
 
 <script setup lang="ts">
@@ -107,6 +102,7 @@ import type { VForm } from "vuetify/components";
 import router from '@/router';
 import { storeToRefs } from 'pinia';
 import { useIndicesStore } from '@/stores/indices';
+import Modal from '@/components/Modal.vue'
 
 /**declaraciones */
 const usuario = useUsuarioStore();
@@ -125,6 +121,7 @@ const us_init = reactive<IUsuario>({
   clave: '',
   foto: '',
   fh_alta: '',
+  tipo_us: 2
 });
 const rulesNombre = [
   (valor:string) => !!valor || "El campo es requerido",
@@ -145,8 +142,10 @@ const {getIndice, incrementaIndice, actualizaIndiceBD} = indices_st;
 const indices = storeToRefs(indices_st);
 const { estableceUsuario } = usuario;
 const dialog = reactive({
+  titulo: "Cuidado",
   dialog: false,
-  msj: 'Ocurrio algo! :O'
+  msj: 'Ocurrio algo! :O',
+  color: ""
 });
 
 /**Funciones */
@@ -164,12 +163,13 @@ const clear = () => {
 const registrarUsuario = async () => {
   try {
     const {valid} = await formRef.value!.validate();
-    if(valid){
+    const usValid = await verificaUsurario();
+    if(valid && usValid){
       cargando.value = true;
       us_init.fh_alta = fechaActual();
       us_init.id = getIndice("usuario") + 1;
       us_init.id = us_init.id.toString();
-      let resp  = await axios({
+      const resp  = await axios({
         method: 'POST',
         url: `${API}/usuario`,
         data: us_init
@@ -178,6 +178,11 @@ const registrarUsuario = async () => {
       await actualizaIndiceBD("usuario");
       estableceUsuario(us_init);
       router.push("/contenido");
+    }else if(!usValid) {
+      dialog.titulo = "Error";
+      dialog.msj = "Ya existe usuario con ese correo";
+      dialog.color = "warning"
+      dialog.dialog = true;
     }
     
     cargando.value = false;
@@ -185,10 +190,21 @@ const registrarUsuario = async () => {
   } catch (ex) {
     cargando.value = false;
     console.log(ex.message);
+    dialog.titulo = "Error";
     dialog.msj = ex.message;
+    dialog.color = "danger"
     dialog.dialog = true;
 
   }
+}
+const verificaUsurario = async () => {
+  const resp  = await axios({
+    method: 'GET',
+    url: `${API}/usuario?correo=${us_init.correo}`
+  });
+  if(resp.data.length > 0)
+    return false;
+  return true;
 }
 </script>
 

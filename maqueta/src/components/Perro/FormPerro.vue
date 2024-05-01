@@ -61,65 +61,34 @@
         </v-col>
       </v-row>
     </v-form>
-    <v-row justify="center">
-      <v-col cols="12">
-        <v-table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Vacuna</th>
-              <th>Fecha</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(vacunacion, i) in nuevasVacunaciones" :key="i">
-              <td> <v-icon color="warning" icon="mdi-circle" /></td>
-              <td>{{ nombreVacuna(vacunacion.vacuna_id) }}</td>
-              <td>{{ vacunacion.fh_vacuna }}</td>
-              <td>
-                <v-btn color="danger"
-                  density="compact"
-                  icon
-                  @click="showAlerDialog(i,false)"
-                >
-                  <v-icon color="white">
-                    mdi-close
-                  </v-icon>
-                </v-btn>
-              </td>
-            </tr>
-            <tr v-for="(vacunacion, i) in vacunaciones" :key="i">
-              <td> <v-icon color="success" icon="mdi-check-circle" /></td>
-              <td>{{ nombreVacuna(vacunacion.vacuna_id) }}</td>
-              <td>{{ vacunacion.fh_vacuna }}</td>
-              <td>
-                <v-btn color="danger"
-                  density="compact"
-                  icon
-                  @click="showAlerDialog(vacunacion.id, true)"
-                >
-                  <v-icon color="white">
-                    mdi-close
-                  </v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="8">
-        <v-container class="max-width">
-          <v-pagination
-            v-model="paginacion.page"
-            :length="paginacion.length"
-            class="my-4"
-          ></v-pagination>
-        </v-container>
-      </v-col>
-    </v-row>
+    
+
+    <Tabla
+      :headers="headers"
+      :data="dataTable"
+      :page="paginacion.page"
+      :length="paginacion.length"
+      @cambia-pagina="(page) => paginacion.page = page"
+    >
+      <template v-slot:status-slot="props">
+        <v-icon v-if="props.item.id !== 0" color="success" icon="mdi-check-circle" />
+        <v-icon v-else color="warning" icon="mdi-circle" />
+      </template>
+      <template v-slot:vacuna-slot="props">
+        {{ nombreVacuna(props.item.vacuna_id) }}
+      </template>
+      <template v-slot:eliminar-slot="props">
+        <v-btn color="danger"
+          density="compact"
+          icon
+          @click="showAlerDialog(props.item.id != 0? props.item.id: props.index, props.item.id !== 0)"
+        >
+          <v-icon color="white">
+            mdi-close
+          </v-icon>
+        </v-btn>
+      </template>
+    </Tabla>
   </Modal>
   <Modal
     title="Vacunas"
@@ -184,7 +153,8 @@ import { usePerrosStore } from '@/stores/perros';
 import { useIndicesStore } from '@/stores/indices';
 import { useUsuarioStore } from '@/stores/usuario';
 import type { IArchivo } from '@/interfaces/iarchivo';
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/Modal.vue';
+import Tabla from '@/components/Tabla.vue';
 
 /**declaraciones */
 const props = defineProps({
@@ -243,14 +213,14 @@ const rulesSelect = [
 const vacunas = ref<IVacuna[]>([]);
   const headers = [
   {
-    titulo: "",
+    titulo: "Estado",
     slotName: "status-slot",
     nameProp: ""
   },
   {
     titulo: "Vacuna",
-    slotName: "detalle-slot",
-    nameProp: "fecha"
+    slotName: "vacuna-slot",
+    nameProp: "fh_vacuna"
   },
   {
     titulo: "Fecha",
@@ -263,6 +233,7 @@ const vacunas = ref<IVacuna[]>([]);
     nameProp: ""
   },
 ];
+const dataTable = computed(() => [...nuevasVacunaciones.value, ...vacunaciones.value ])
 const dialogVacuna = ref(false);
 const vacunaciones = ref<IVacunacion[]>([]);
 const nuevasVacunaciones = ref<IVacunacion[]>([]);
