@@ -1,6 +1,5 @@
 import type { IUsuario } from "@/interfaces/iusuario";
 import { defineStore } from "pinia";
-import { registerRuntimeCompiler } from "vue";
 
 export const useUsuarioStore = defineStore('usuario', {
   state: (): IUsuario => ({
@@ -12,7 +11,8 @@ export const useUsuarioStore = defineStore('usuario', {
     clave: '',
     foto: null,
     fh_alta: null,
-    tipo_us: 1
+    fh_nac: null,
+    tipo_us: 0
   }),
   actions: {
     estableceUsuario(usuario: IUsuario) {
@@ -40,6 +40,9 @@ export const useUsuarioStore = defineStore('usuario', {
     },
     getUsuarioID: (state) => {
       return state.id;
+    },
+    getPermiso: (state) => {
+      return state.tipo_us;
     }
   },
   persist: true
@@ -52,16 +55,20 @@ interface IUsuarios {
 }
 
 export const useUsuariosStore = defineStore("usuarios", {
-  state:(): IUsuarios =>({
+  state: (): IUsuarios => ({
     usuarios: [],
     index: 0,
     indice: 0
   }),
   actions: {
-    addUsuario(usuario: IUsuario){
+    addUsuario(usuario: IUsuario) {
       this.usuarios.push(usuario);
     },
-    eliminaUsiario(id: number) {
+    setUsuario(usuario: IUsuario) {
+      let usuarioIndex = this.usuarios.find(u => u.id == usuario.id);
+      this.usuarios[usuarioIndex] = usuario;
+    },
+    eliminarUsiario(id: number) {
       this.usuarios = this.usuarios.filter(us => us.id !== id);
     },
     setIndice(indice: Number) {
@@ -69,14 +76,8 @@ export const useUsuariosStore = defineStore("usuarios", {
     }
   },
   getters: {
-    getUsuarios :(state) => {
+    getUsuarios: (state) => {
       return state.usuarios;
-    },
-    getLenUsuarios : (state) => {
-      return state.usuarios.length;
-    },
-    getIndice : (state) => {
-      return state.indice;
     }
   },
   persist: true

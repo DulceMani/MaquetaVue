@@ -7,8 +7,9 @@
       "a_materno": "Mani",
       "clave": "123456",
       "correo": "dulce@mail.com",
-      "foto": "/assets/img/mujer.jpeg",
+      "foto": "",
       "fh_alta": "2024-04-6",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -18,8 +19,9 @@
       "a_materno": "Mani",
       "clave": "12345",
       "correo": "ducle@mail.com",
-      "foto": "/assets/img/mujer.jpeg",
+      "foto": "",
       "fh_alta": "2024-04-6",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -31,6 +33,7 @@
       "clave": "98765",
       "foto": "",
       "fh_alta": "2024-04-28",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -42,6 +45,7 @@
       "clave": "12345",
       "foto": "",
       "fh_alta": "2024-04-28",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -53,6 +57,7 @@
       "clave": "hola",
       "foto": "",
       "fh_alta": "2024-04-28",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -64,6 +69,7 @@
       "clave": "perla",
       "foto": "",
       "fh_alta": "2024-04-28",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -75,6 +81,7 @@
       "clave": "hugo",
       "foto": "",
       "fh_alta": "2024-04-28",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -86,6 +93,7 @@
       "clave": "preuba",
       "foto": "",
       "fh_alta": "2024-04-29",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -97,6 +105,7 @@
       "clave": "preuba",
       "foto": "",
       "fh_alta": "2024-04-29",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -108,6 +117,7 @@
       "clave": "123456",
       "foto": "",
       "fh_alta": "2024-04-29",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -119,6 +129,7 @@
       "clave": "1234567",
       "foto": "",
       "fh_alta": "2024-04-29",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -130,6 +141,7 @@
       "clave": "12345678",
       "foto": "",
       "fh_alta": "2024-04-29",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -141,6 +153,7 @@
       "clave": "123456",
       "foto": "",
       "fh_alta": "2024-04-29",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -152,6 +165,7 @@
       "clave": "1234567",
       "foto": "",
       "fh_alta": "2024-04-29",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -163,6 +177,7 @@
       "clave": "1234546",
       "foto": "",
       "fh_alta": "2024-04-29",
+      "fh_nac": "",
       "tipo_us": 2
     },
     {
@@ -174,6 +189,7 @@
       "clave": "123456",
       "foto": "",
       "fh_alta": "2024-04-30",
+      "fh_nac": "",
       "tipo_us": 2
     }
   ],

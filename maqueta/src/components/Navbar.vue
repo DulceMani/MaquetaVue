@@ -31,10 +31,9 @@
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-view-dashboard" title="Home" to="/">
-          </v-list-item>
-          <v-list-item prepend-icon="mdi-dog" title="Mis perritos" to="/perros">
-          </v-list-item>
+          <v-list-item prepend-icon="mdi-view-dashboard" title="Home" to="/" />
+          <v-list-item prepend-icon="mdi-dog" title="Mis perritos" to="/perros" />
+          <v-list-item v-if="getPermiso === PERMISOS.get('ADMIN')" prepend-icon="mdi-account-multiple" title="Usuarios" to="/usuarios" />
         </v-list>
     </v-navigation-drawer>
     <v-main>
@@ -54,11 +53,11 @@ import { ref } from 'vue';
 import imgHombre from '@/assets/img/hombre.png';
 import { useUsuarioStore } from '@/stores/usuario';
 import router from '@/router';
-import { storeToRefs } from 'pinia';
+import {PERMISOS} from '@/contantes'
 
 /**declaraciones */
 const usuario = useUsuarioStore();
-const { destruyeUsuario, getUsuarioID } = usuario;
+const { destruyeUsuario, getUsuarioID, getPermiso } = usuario;
 if(getUsuarioID == 0){
   router.push("/login");
 }

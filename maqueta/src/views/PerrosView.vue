@@ -206,7 +206,6 @@ const descargarPDF =  async (evidencia: number) => {
       });
       archivo.value = response.data;
       urlPDF.value = base64ToUrl(archivo.value?.datos, archivo.value?.tipo);
-      console.log(urlPDF.value);
       setTimeout(()=> document.getElementById('fileP'+evidencia).click(), 300);
     }
   } catch(ex) {
@@ -253,7 +252,6 @@ const eliminarPerro  = async () => {
 
 const busuqedaDato = async (texto: String) => {
   try {
-    console.log(texto)
     let response = await axios({
       method: "GET",
       url: `${API}/perros?_sort=fh_alta,nombre`

@@ -7,5 +7,6 @@ export interface IUsuario {
   clave: string,
   foto: string | null,
   fh_alta: string | null,
+  fh_nac: string | null,
   tipo_us: number
 }

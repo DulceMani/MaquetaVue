@@ -1,5 +1,11 @@
 export const API = 'http://localhost:3000'
 
+export const PERMISOS = new Map();
+PERMISOS.set("ADMIN", 1);
+PERMISOS.set("EDICION", 2);
+PERMISOS.set("LECTURA", 3);
+
+
 export const fechaActual = () => {
   let fecha = new Date();
   let year = fecha.getFullYear();

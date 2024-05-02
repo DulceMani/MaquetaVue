@@ -33,9 +33,19 @@ const router = createRouter({
         {
           path:'/perros',
           component: () => import('../views/PerrosView.vue')
+        },
+        {
+          path:'/usuarios',
+          component: () => import('../views/UsuariosView.vue')
+        },
+        {
+          path: '/detalle-usuario/:usuarioId',
+          name: "detalle-usuario",
+          component: () => import('../components/usuario/DetalleUsuario.vue'),
+          props: true
         }
       ]
-    },
+    }
   ]
 });
 
