@@ -103,15 +103,18 @@ import router from '@/router';
 import { storeToRefs } from 'pinia';
 import { useIndicesStore } from '@/stores/indices';
 import Modal from '@/components/Modal.vue'
+import { onBeforeMount } from 'vue';
 
 /**declaraciones */
 const usuario = useUsuarioStore();
 const { id } = storeToRefs(usuario);
-if(id.value !== 0) {
-  router.push("/contenido");
-}
+const indices_st = useIndicesStore();
+const {getIndice, incrementaIndice, actualizaIndiceBD} = indices_st;
+const { estableceUsuario } = usuario;
 
-const formRef = ref<null | VForm>(null)
+const formRef = ref<null | VForm>(null);
+const cargando = ref(false);
+
 const us_init = reactive<IUsuario>({
   id: 0,
   nombre: '',
@@ -121,8 +124,16 @@ const us_init = reactive<IUsuario>({
   clave: '',
   foto: '',
   fh_alta: '',
-  tipo_us: 2
+  tipo_us: 2,
+  fh_nac: ''
 });
+const dialog = reactive({
+  titulo: "Cuidado",
+  dialog: false,
+  msj: 'Ocurrio algo! :O',
+  color: ""
+});
+
 const rulesNombre = [
   (valor:string) => !!valor || "El campo es requerido",
   (valor:string) => !!valor && valor.length >= 1 || "Debe tener al menos 1 caracteres"
@@ -134,21 +145,15 @@ const rulesCorreo = [
 const rulesPassword = [
   (valor:string) => !!valor || "El campo es requerido",
   (valor:string) => !!valor && valor.length >= 6 || "Debe tener al menos 6 caracteres"
-]
-
-const cargando = ref(false);
-const indices_st = useIndicesStore();
-const {getIndice, incrementaIndice, actualizaIndiceBD} = indices_st;
-const indices = storeToRefs(indices_st);
-const { estableceUsuario } = usuario;
-const dialog = reactive({
-  titulo: "Cuidado",
-  dialog: false,
-  msj: 'Ocurrio algo! :O',
-  color: ""
-});
+];
 
 /**Funciones */
+onBeforeMount(()=>{
+  if(id.value !== 0) {
+    router.push("/contenido");
+  }
+})
+
 const clear = () => {
   us_init.id = 0;
   us_init.nombre = '';

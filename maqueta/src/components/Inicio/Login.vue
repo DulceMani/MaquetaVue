@@ -60,26 +60,35 @@
 <script setup lang="ts">
 import { API } from '@/contantes'
 import { reactive, ref } from 'vue';
-import { IUsuario } from '@/interfaces/iusuario';
+import type { IUsuario } from '@/interfaces/iusuario';
 import type { VForm } from "vuetify/components";
 import router from '@/router';
 import axios from 'axios'
 import { useUsuarioStore } from '@/stores/usuario';
 import { storeToRefs } from 'pinia';
 import Modal from '@/components/Modal.vue'
+import { onBeforeMount } from 'vue';
 
 /**declaraciones */
 const usuario_st = useUsuarioStore();
 const { id } = storeToRefs(usuario_st);
-if(id.value != 0) {
-  router.push("/contenido");
-}
+const { estableceUsuario } = usuario_st;
 
-const formRef = ref<null | VForm>(null)
+const usuario = ref<null | IUsuario>(null);
+const formRef = ref<null | VForm>(null);
+const cargando = ref(false);
+
 const credenciales = reactive({
   correo: '',
   clave: ''
 });
+const dialog = reactive({
+  titulo: "Cuidado",
+  dialog: false,
+  msj: 'Ocurrio algo! :O',
+  color: ""
+});
+
 const rulesCorreo = [
   (valor: string) => !!valor || "El campo es requerido",
   (valor: string) => !valor || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(valor) || 'El correo tiene que ser valido'
@@ -87,19 +96,15 @@ const rulesCorreo = [
 const rulesPassword = [
   (valor: string) => !!valor || "El campo es requerido",
   (valor: string) => !!valor && valor.length >= 6 || "Debe tener al menos 6 caracteres"
-]
-
-const cargando = ref(false);
-const dialog = reactive({
-  titulo: "Cuidado",
-  dialog: false,
-  msj: 'Ocurrio algo! :O',
-  color: ""
-});
-const usuario = ref<null | IUsuario>(null);
-const { estableceUsuario } = usuario_st;
+];
 
 /**funciones */
+onBeforeMount(() =>{
+  if(id.value != 0) {
+    router.push("/contenido");
+  }
+});
+
 const iniciar = async () => {
   try {
     const {valid} = await formRef.value!.validate();

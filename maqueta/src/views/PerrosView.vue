@@ -101,20 +101,24 @@ import Modal from '@/components/Modal.vue';
 /**declaraciones */
 const usuario = useUsuarioStore();
 const { id } = storeToRefs(usuario);
-const paginacion = reactive({
-  page: 1,
-  length: 1,
-  per_page: 5
-});
 const perros_st = usePerrosStore();
 const { eliminaPerro } = perros_st;
 const {perros} = storeToRefs(perros_st);
+
 const dialog = ref(false);
 const perroDialog = ref<IPerro | null>(null);
 const urlPDF = ref('');
 const archivo = ref<IArchivo | null>(null);
 const dialogAlert = ref(false);
 const perroDeleteId = ref(0);
+const buscardor = ref(true);
+
+const paginacion = reactive({
+  page: 1,
+  length: 1,
+  per_page: 5
+});
+
 const headers = [
   {
     titulo: "Detalle",
@@ -152,7 +156,7 @@ const headers = [
     nameProp: ""
   }
 ];
-const buscardor = ref(true);
+
 /***********************funciones *************/
 onMounted (async () => {
   await traePerros();

@@ -4,12 +4,11 @@
     <v-row justify="center">
       <v-col lg="4" md="6" sm="8" xs="12"
       >
-       <v-img
+        <v-img
           class="w-50 img-init mx-auto"
           :src="perroLogim"
         >
         </v-img>
-        
       </v-col>
     </v-row>
     <RouterView />
@@ -28,6 +27,7 @@ import type { IIndice } from '@/interfaces/iindice';
 
 /**declaraciones */
 const {estableceIndices} = useIndicesStore();
+
 const indices = ref<IIndice[]>([]);
 /**funciones */
 onMounted(() => {
@@ -52,7 +52,6 @@ onMounted(() => {
   min-height:100vh;
   height: 100%;
   width: 100%;
-  
   background-size: cover;
   .img-init {
     border-radius: 50%;

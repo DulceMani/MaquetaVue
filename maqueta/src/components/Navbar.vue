@@ -11,6 +11,9 @@
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
+      <v-btn icon :to="`/detalle-usuario/${getUsuarioID}`">
+        <v-icon>mdi-account</v-icon>
+      </v-btn>
       <v-btn @click="salir">
         <v-icon>mdi-export</v-icon>
         Salir
@@ -33,7 +36,7 @@
         <v-list density="compact" nav>
           <v-list-item prepend-icon="mdi-view-dashboard" title="Home" to="/" />
           <v-list-item prepend-icon="mdi-dog" title="Mis perritos" to="/perros" />
-          <v-list-item v-if="getPermiso === PERMISOS.get('ADMIN')" prepend-icon="mdi-account-multiple" title="Usuarios" to="/usuarios" />
+          <v-list-item v-if="getIsAdmin" prepend-icon="mdi-account-multiple" title="Usuarios" to="/usuarios" />
         </v-list>
     </v-navigation-drawer>
     <v-main>
@@ -53,17 +56,20 @@ import { ref } from 'vue';
 import imgHombre from '@/assets/img/hombre.png';
 import { useUsuarioStore } from '@/stores/usuario';
 import router from '@/router';
-import {PERMISOS} from '@/contantes'
+import { onBeforeMount } from 'vue';
 
 /**declaraciones */
 const usuario = useUsuarioStore();
-const { destruyeUsuario, getUsuarioID, getPermiso } = usuario;
-if(getUsuarioID == 0){
-  router.push("/login");
-}
+const { destruyeUsuario, getUsuarioID, getIsAdmin } = usuario;
+
 const drawer = ref(false);
 
 /**funciones */
+onBeforeMount(() => {
+  if(getUsuarioID == 0){
+    router.push("/login");
+  }
+})
 const salir = () => {
   destruyeUsuario();
   router.push("/");

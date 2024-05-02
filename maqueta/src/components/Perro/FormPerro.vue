@@ -167,15 +167,33 @@ const props = defineProps({
     default: false
   }
 });
+const perro = computed(()=> props.perro);
+const dataTable = computed(() => [...nuevasVacunaciones.value, ...vacunaciones.value ]);
+
+const emit = defineEmits(["cierraDialog"]);
+
+const { getUsuarioID } = useUsuarioStore();
+const {getIndice, incrementaIndice, setIndice, actualizaIndiceBD} = useIndicesStore();
+const {setPerro, addPerro} = usePerrosStore()
+
+const dialogAlert = ref(false);
+const formRef = ref<null | VForm>(null);
+const formV  = ref<null | VForm>(null);
+const vacunas = ref<IVacuna[]>([]);
+const dialogVacuna = ref(false);
+const vacunaciones = ref<IVacunacion[]>([]);
+const nuevasVacunaciones = ref<IVacunacion[]>([]);
+const fileEvidencia = ref<File | null>(null);
+
+const vacunacionDeleted = reactive({
+  indicador: 0,
+  inBD: false
+});
 const paginacion = reactive({
   page: 1,
   length: 1,
   per_page: 5
 });
-const perro = computed(()=> props.perro);
-const emit = defineEmits(["cierraDialog"]);
-const formRef = ref<null | VForm>(null);
-const formV  = ref<null | VForm>(null);
 const formPerro = reactive<IPerro>({
   id: 0,
   nombre: '',
@@ -197,7 +215,7 @@ const archivo = reactive<IArchivo>({
   tipo: '',
   datos: ''
 });
-const {setPerro, addPerro} = usePerrosStore()
+
 
 const rulesNombre = [
   (valor:string) => !!valor || "El campo es requerido",
@@ -206,12 +224,10 @@ const rulesNombre = [
 const rulesEdad = [
   (valor:number) => !!valor || "El campo es requerido y debe ser numerico"
 ];
-
 const rulesSelect = [
-  valor => !!valor || "Es necesario seleccionar un elemento"
+  (valor:number) => !!valor || "Es necesario seleccionar un elemento"
 ];
-const vacunas = ref<IVacuna[]>([]);
-  const headers = [
+const headers = [
   {
     titulo: "Estado",
     slotName: "status-slot",
@@ -233,18 +249,7 @@ const vacunas = ref<IVacuna[]>([]);
     nameProp: ""
   },
 ];
-const dataTable = computed(() => [...nuevasVacunaciones.value, ...vacunaciones.value ])
-const dialogVacuna = ref(false);
-const vacunaciones = ref<IVacunacion[]>([]);
-const nuevasVacunaciones = ref<IVacunacion[]>([]);
-const {getIndice, incrementaIndice, setIndice, actualizaIndiceBD} = useIndicesStore()
-const dialogAlert = ref(false);
-const vacunacionDeleted = reactive({
-  indicador: 0,
-  inBD: false
-});
-const { getUsuarioID } = useUsuarioStore();
-const fileEvidencia = ref<File | null>(null);
+
 
 /******************************functions****************************/
 

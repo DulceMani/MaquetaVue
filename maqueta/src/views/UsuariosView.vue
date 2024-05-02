@@ -7,16 +7,7 @@
             <v-icon>mdi-account-multiple</v-icon>
             Lista de Usuarios
           </v-col>
-          <v-col lg="3" md="3" sm="5"
-            class="d-flex justify-end"
-          >
-            <v-btn prepend-icon="mdi-plus" 
-              size="small"
-              color="primary"
-              @click="nuevoUsuario"
-            >    Nuevo usuario
-            </v-btn>
-          </v-col>
+          
         </v-row>
       </v-card-title>
     </v-card-item>
@@ -36,9 +27,12 @@
           <v-avatar @click="irDetalle(props.item.id)">
             <v-img
               :alt="props.item.nombre"
-              :src="props.item.foto? getFoto(props.item.foto) : defaultFoto"
+              :src="props.item.foto != 0? fotosUs.find(f => f.index == props.index)?.fotoUrl : defaultFoto"
             ></v-img>
           </v-avatar>
+        </template>
+        <template v-slot:permiso-slot="props">
+          {{ Permisos.find(p => p.id == props.item.tipo_us)?.text }}
         </template>
         <template v-slot:eliminar-slot="props">
           <v-btn color="danger" 
@@ -54,17 +48,17 @@
       </Tabla>
     </v-card-text>
     <Modal
-      title="Cuidado"
+      :title="dialog.titulo"
       icon="mdi-paw"
-      :btn-cancel="true"
       :btn-ok="true"
-      :dialog="dialogAlert"
+      :btn-cancel="dialog.btnCancel"
+      :dialog="dialog.dialog"
       :size="250"
-      color="danger"
-      @cancelar-modal="dialogAlert = false"
-      @aceptar-cambios="eliminaUsuario"
+      :color="dialog.color"
+      @aceptar-cambios="AceptarModal(dialog.funcionAceptar)"
+      @cancelar-modal="dialog.dialog = false"
     >
-      Cuidado estas apunto de eliminar el registro del usuario se eliminara todo su historial.
+      {{ dialog.msj }}
     </Modal>
   </v-container>
 </template>
@@ -74,7 +68,7 @@ import { onMounted, watch } from 'vue';
 import { reactive, ref } from 'vue';
 import axios from 'axios'
 import { API, base64ToUrl, PERMISOS } from '@/contantes';
-import { useUsuarioStore, useUsuariosStore } from '@/stores/usuario';
+import { Permisos, useUsuarioStore, useUsuariosStore } from '@/stores/usuario';
 import { storeToRefs } from 'pinia';
 import type { IUsuario } from '@/interfaces/iusuario';
 import type { IArchivo } from '@/interfaces/iarchivo';
@@ -82,29 +76,39 @@ import Tabla from '@/components/Tabla.vue';
 import Modal from '@/components/Modal.vue';
 import router from '@/router';
 import defaultFoto from '@/assets/img/hombre.png';
-const { getPermiso } = useUsuarioStore();
+import { onBeforeMount } from 'vue';
 
-if (getPermiso !== PERMISOS.get("ADMIN")) {
-  router.push("/home");
-}
+
+
+const usuarios_st = useUsuariosStore()
+const {eliminarUsiario} = usuarios_st;
+const { getIsAdmin } = useUsuarioStore();
+const {usuarios} = storeToRefs(usuarios_st);
+
+const usuarioDialog = ref<IUsuario | null>(null);
+const urlImg = ref('');
+const archivo = ref<IArchivo | null>(null);
+const usuarioDeleteId = ref(0);
+const buscardor = ref(true);
 
 const paginacion = reactive({
   page: 1,
   length: 1,
   per_page: 5
 });
-const usuarios_st = useUsuariosStore()
-const {eliminarUsiario} = usuarios_st;
-const {usuarios} = storeToRefs(usuarios_st);
-const dialog = ref(false);
-const usuarioDialog = ref<IUsuario | null>(null);
-const urlImg = ref('');
-const archivo = ref<IArchivo | null>(null);
-const dialogAlert = ref(false);
-const usuarioDeleteId = ref(0);
+const fotosUs = reactive([]);
+const dialog = reactive({
+  titulo: "Cuidado",
+  dialog: false,
+  msj: 'Ocurrio algo! :O',
+  color: "",
+  btnCancel: false,
+  funcionAceptar: ''
+});
+
 const headers = [
   {
-    titulo: "Foto",
+    titulo: "Detalle",
     slotName: "foto-slot",
     nameProp: ""
   },
@@ -149,15 +153,39 @@ const headers = [
     nameProp: ""
   }
 ];
-const buscardor = ref(true);
+
 
 /**************funciones**********/
+onBeforeMount(() => {
+  if (!getIsAdmin) {
+    router.push("/home");
+  }
+});
 onMounted (async () => {
   await traeUsuarios();
+
+  usuarios.value.map(async(us, i) => {
+    let aux = {
+      index: i,
+      fotoUrl: await getFoto(us.foto)
+    };
+    fotosUs.push(aux);
+  })
 });
 watch(usuarios.value, async () =>{
   await traeUsuarios();
+
 });
+watch(dialog, (nueVal) => {
+  if(nueVal.dialog == false){
+    dialog.titulo = "Cuidado";
+    dialog.msj = "";
+    dialog.color = "warning"
+    dialog.dialog = false;
+    dialog.btnCancel = false;
+    dialog.funcionAceptar = "";
+  }
+})
 const paginaTabla = async (page: number) =>{
   paginacion.page = page;
   await traeUsuarios();
@@ -181,26 +209,20 @@ const traeUsuarios = async () => {
   }
 }
 
-const abrirDetalleUs = (usuario: IUsuario) => {
-  if(usuario) {
-    dialog.value = true;
-    usuarioDialog.value = usuario;
-  }
-}
-
-const nuevoUsuario = () => {
-  usuarioDialog.value = null;
-  dialog.value = true;
-}
 
 const alertaEliminaUs = (Id: number) => { 
   usuarioDeleteId.value = Id;
-  dialogAlert.value = true;
+  dialog.titulo = "Cuidado";
+  dialog.msj = "Estas a punto de eliminar todo el registro de un usuario";
+  dialog.color = "warning"
+  dialog.dialog = true;
+  dialog.btnCancel = true;
+  dialog.funcionAceptar = "eliminaUsuario";
 }
 const eliminaUsuario = async () => {
   try{
     
-    let foto = perros.value.find(p => p.id == perroDeleteId.value).foto;
+    let foto = usuarios.value.find(p => p.id == usuarioDeleteId.value).foto;
     if(foto !==0){
       await axios({
         method: "DELETE",
@@ -213,9 +235,18 @@ const eliminaUsuario = async () => {
       url: `${API}/usuario/${usuarioDeleteId.value}`
     });
     eliminarUsiario(usuarioDeleteId.value)
-    dialogAlert.value = false;
+    dialog.titulo = "Usuario eliminado";
+    dialog.msj = "Se elimino el usuario correctamente";
+    dialog.color = "success"
+    dialog.dialog = true;
+    dialog.btnCancel = false;
   } catch(ex) {
     console.log(ex.message)
+    dialog.titulo = "Error";
+    dialog.msj = ex.message;
+    dialog.color = "danger"
+    dialog.dialog = true;
+    dialog.btnCancel = false;
   }
 }
 
@@ -237,9 +268,8 @@ const busuqedaDato = async (texto: String) => {
   }
 }
 
-const getFoto = async (foto: Number) => {
+const getFoto = async (foto: Number): string => {
   try {
-    console.log(foto);
     if(foto) {
       const response = await axios({
         method: "GET",
@@ -247,7 +277,7 @@ const getFoto = async (foto: Number) => {
       });
       archivo.value = response.data;
       urlImg.value = base64ToUrl(archivo.value?.datos, archivo.value?.tipo);
-      return urlImg;
+      return urlImg.value;
     }
     return '';
   } catch(ex) {
@@ -255,10 +285,18 @@ const getFoto = async (foto: Number) => {
   }
 }
 const irDetalle = (usuario_id: number) => {
-  console.log(usuario_id)
   router.push({ name: `detalle-usuario`, params: {usuarioId: usuario_id}});
-
 }
+
+const AceptarModal = async (funcion: string) => {
+  if(funcion == "eliminaUsuario") {
+    await eliminaUsuario();
+  }
+    dialog.dialog = false;
+  
+}
+
+
 </script>
 
 <style scoped>

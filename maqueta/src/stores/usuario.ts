@@ -1,6 +1,12 @@
+import { PERMISOS } from "@/contantes";
 import type { IUsuario } from "@/interfaces/iusuario";
 import { defineStore } from "pinia";
 
+export const Permisos = [
+  { id: 1, text: "Administrador" },
+  { id: 2, text: "Edicion" },
+  { id: 3, text: "Solo lectura" },
+]
 export const useUsuarioStore = defineStore('usuario', {
   state: (): IUsuario => ({
     id: 0,
@@ -12,7 +18,7 @@ export const useUsuarioStore = defineStore('usuario', {
     foto: null,
     fh_alta: null,
     fh_nac: null,
-    tipo_us: 0
+    tipo_us: 2
   }),
   actions: {
     estableceUsuario(usuario: IUsuario) {
@@ -23,6 +29,8 @@ export const useUsuarioStore = defineStore('usuario', {
       this.correo = usuario.correo;
       this.foto = usuario.foto;
       this.fh_alta = usuario.fh_alta;
+      this.tipo_us = usuario.tipo_us;
+      this.fh_nac = usuario.fh_nac;
     },
     destruyeUsuario() {
       this.id = 0;
@@ -32,6 +40,7 @@ export const useUsuarioStore = defineStore('usuario', {
       this.correo = '';
       this.foto = '';
       this.fh_alta = '';
+      this.tipo_us = 2;
     }
   },
   getters: {
@@ -43,6 +52,9 @@ export const useUsuarioStore = defineStore('usuario', {
     },
     getPermiso: (state) => {
       return state.tipo_us;
+    },
+    getIsAdmin: (state) => {
+      return state.tipo_us == PERMISOS.get("ADMIN");
     }
   },
   persist: true

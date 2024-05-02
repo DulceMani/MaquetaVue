@@ -4,13 +4,13 @@
     :max-width="size"
   >
     <v-card>
-    <v-card-title>
-      <v-icon :color="props.color">{{ props.icon }}</v-icon>
-      {{ props.title }}
-    </v-card-title>
-    <v-card-text>
-      <slot></slot>
-    </v-card-text>
+      <v-card-title>
+        <v-icon :color="props.color">{{ props.icon }}</v-icon>
+        {{ props.title }}
+      </v-card-title>
+      <v-card-text>
+        <slot></slot>
+      </v-card-text>
       <template v-slot:actions>
         <v-spacer></v-spacer>
         <v-btn v-if="props.btnCancel"
