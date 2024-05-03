@@ -236,12 +236,12 @@ const headers = [
   {
     titulo: "Vacuna",
     slotName: "vacuna-slot",
-    nameProp: "fh_vacuna"
+    nameProp: ""
   },
   {
     titulo: "Fecha",
     slotName: "fh_vacuna",
-    nameProp: "fn_vacuna"
+    nameProp: "fh_vacuna"
   },
   {
     titulo: "Eliminar",
@@ -411,7 +411,7 @@ const showAlerDialog = (indicador: number, inBD: boolean) => {
 }
 
 const procesaEvidencia = async () => {
-  if(fileEvidencia){
+  if(fileEvidencia.value){
       await fileToBytes(fileEvidencia.value, async (bytes) => {
       archivo.nombre = fileEvidencia.value?.name;
       archivo.tipo = fileEvidencia.value?.type;

@@ -136,6 +136,7 @@
             <v-btn
               text="Cancelar" 
               block
+              @click="cancelarCambios"
             >
             </v-btn>
 
@@ -371,6 +372,9 @@ const getFoto =  async () => {
   }
 }
 
+const cancelarCambios = async () => {
+  await traeDatosUs();
+}
 </script>
 
 <style scoped>
