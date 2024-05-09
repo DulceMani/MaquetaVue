@@ -64,8 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
-import { reactive, ref } from 'vue';
+import { onMounted, watch,reactive, ref, onBeforeMount } from 'vue';
 import axios from 'axios'
 import { API, base64ToUrl, PERMISOS } from '@/contantes';
 import { Permisos, useUsuarioStore, useUsuariosStore } from '@/stores/usuario';
@@ -76,9 +75,6 @@ import Tabla from '@/components/Tabla.vue';
 import Modal from '@/components/Modal.vue';
 import router from '@/router';
 import defaultFoto from '@/assets/img/hombre.png';
-import { onBeforeMount } from 'vue';
-
-
 
 const usuarios_st = useUsuariosStore()
 const {eliminarUsiario} = usuarios_st;

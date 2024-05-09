@@ -52,11 +52,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import imgHombre from '@/assets/img/hombre.png';
 import { useUsuarioStore } from '@/stores/usuario';
 import router from '@/router';
-import { onBeforeMount } from 'vue';
 
 /**declaraciones */
 const usuario = useUsuarioStore();

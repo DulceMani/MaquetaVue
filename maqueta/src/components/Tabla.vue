@@ -72,8 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import {defineProps, getCurrentInstance} from 'vue'
+import { getCurrentInstance} from 'vue'
 
 const props = defineProps({
   headers: {

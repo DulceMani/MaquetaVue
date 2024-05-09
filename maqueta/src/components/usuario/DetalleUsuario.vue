@@ -199,7 +199,6 @@ const {getIndice, incrementaIndice, actualizaIndiceBD} = indices_st;
 const formRef = ref<null | VForm>(null);
 const miPerfil = ref(false);
 const block = ref(false);
-const archivo = ref<IArchivo | null>(null);
 const fotoFile = ref<File | null>(null);
 const cargando = ref(false);
 const urlFoto = ref('');
@@ -222,6 +221,12 @@ const dialog = reactive({
   msj: 'Ocurrio algo! :O',
   color: ""
 });
+const archivo = reactive<IArchivo>({
+  id: 0,
+  nombre: "",
+  tipo: "",
+  datos: ""
+});
 
 const rulesNombre = [
   (valor:string) => !!valor || "El campo es requerido",
@@ -241,20 +246,17 @@ const rulesFoto = [
 
 /**************************funciones*************** */
 onBeforeMount(() => {
-  if(!getIsAdmin && getUsuarioID != usuarioID ) {
+  if(!getIsAdmin && getUsuarioID != usuarioID.value ) {
     router.push("/home");
   }
 
 })
 onMounted(async () => {
-  if(getUsuarioID == usuarioID){
+  if(getUsuarioID == usuarioID.value){
     miPerfil.value = true;
   }
   await traeDatosUs();
 });
-watch(usuarioDet, async () => {
-  await getFoto();
-})
 
 const traeDatosUs = async () => {
   try{
@@ -272,6 +274,7 @@ const traeDatosUs = async () => {
     usuarioDet.foto = response.data.foto;
     usuarioDet.fh_nac = response.data.fh_nac;
     usuarioDet.tipo_us = response.data.tipo_us;
+    await getFoto();
   } catch(ex) {
     console.log(ex.message)
   }
@@ -288,7 +291,7 @@ const guardarPerfil = async () => {
         data: usuarioDet
       });
       setUsuario(usuarioDet);
-      if(getUsuarioID == usuarioID) {
+      if(getUsuarioID == usuarioID.value) {
         estableceUsuario(usuarioDet);
       }
       await procesaFoto(); 
@@ -309,13 +312,13 @@ const guardarPerfil = async () => {
 }
 
 const procesaFoto = async () => {
-  console.log(fotoFile)
   if(fotoFile.value){
       await fileToBytes(fotoFile.value, async (bytes) => {
       archivo.nombre = fotoFile.value?.name;
       archivo.tipo = fotoFile.value?.type;
       archivo.datos = await bytesToBase64(bytes);
       await guardaArchivo();
+      await getFoto();
     });
   }
 }
@@ -350,7 +353,7 @@ const guardaArchivo = async () =>{
     });
     setUsuario(usuarioDet);
 
-    if(getUsuarioID == usuarioID) {
+    if(getUsuarioID == usuarioID.value) {
       estableceUsuario(usuarioDet)
     }
   } catch(ex) {
@@ -359,13 +362,16 @@ const guardaArchivo = async () =>{
 }
 const getFoto =  async () => {
   try {
-    if(usuarioDet.foto !== 0){
+    if(usuarioDet.foto !== 0) {
       const response = await axios({
         method: "GET",
-        url: `${API}/archivos/${usuarioDet.foto}`
+        url: `${API}/archivos/${usuarioDet.foto?.toString()}`
       });
-      archivo.value = response.data;
-      urlFoto.value = base64ToUrl(archivo.value?.datos, archivo.value?.tipo);
+      archivo.id = response.data.id;
+      archivo.datos = response.data.datos;
+      archivo.tipo = response.data.tipo;
+      archivo.nombre = response.data.nombre;
+      urlFoto.value = base64ToUrl(archivo.datos, archivo.tipo);
     }
   } catch(ex) {
     console.log(ex.message);
